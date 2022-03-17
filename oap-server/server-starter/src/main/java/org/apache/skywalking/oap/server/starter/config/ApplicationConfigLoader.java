@@ -48,7 +48,7 @@ public class ApplicationConfigLoader implements ConfigLoader<ApplicationConfigur
     @Override
     public ApplicationConfiguration load() throws ConfigFileNotFoundException {
         ApplicationConfiguration configuration = new ApplicationConfiguration();
-        this.loadConfig(configuration);
+        this.loadConfig(configuration);//读取application.yaml配置，写入到applicationConfiguration里面
         this.overrideConfigBySystemEnv(configuration);
         return configuration;
     }
@@ -56,15 +56,19 @@ public class ApplicationConfigLoader implements ConfigLoader<ApplicationConfigur
     @SuppressWarnings("unchecked")
     private void loadConfig(ApplicationConfiguration configuration) throws ConfigFileNotFoundException {
         try {
+            //本来结构就是三层的，eg.key-core,map为selector:value|default:value.
             Reader applicationReader = ResourceUtils.read("application.yml");
             Map<String, Map<String, Object>> moduleConfig = yaml.loadAs(applicationReader, Map.class);
             if (CollectionUtils.isNotEmpty(moduleConfig)) {
                 selectConfig(moduleConfig);
                 moduleConfig.forEach((moduleName, providerConfig) -> {
+                    //说明至少有一个selector
                     if (providerConfig.size() > 0) {
                         log.info("Get a module define from application.yml, module name: {}", moduleName);
+                        //将模块加入到modules中
                         ApplicationConfiguration.ModuleConfiguration moduleConfiguration = configuration.addModule(
                             moduleName);
+                        //循环provier里面的参数
                         providerConfig.forEach((providerName, config) -> {
                             log.info(
                                 "Get a provider define belong to {} module, provider name: {}", moduleName,
@@ -74,6 +78,7 @@ public class ApplicationConfigLoader implements ConfigLoader<ApplicationConfigur
                             final Properties properties = new Properties();
                             if (propertiesConfig != null) {
                                 propertiesConfig.forEach((propertyName, propertyValue) -> {
+                                    //map还是string
                                     if (propertyValue instanceof Map) {
                                         Properties subProperties = new Properties();
                                         ((Map) propertyValue).forEach((key, value) -> {
@@ -87,6 +92,7 @@ public class ApplicationConfigLoader implements ConfigLoader<ApplicationConfigur
                                     }
                                 });
                             }
+                            //add provider
                             moduleConfiguration.addProviderConfiguration(providerName, properties);
                         });
                     } else {
@@ -152,13 +158,16 @@ public class ApplicationConfigLoader implements ConfigLoader<ApplicationConfigur
             Map.Entry<String, Map<String, Object>> entry = moduleIterator.next();
             final String moduleName = entry.getKey();
             final Map<String, Object> providerConfig = entry.getValue();
+            //如果配置中没有selector，则说明不需要continue
             if (!providerConfig.containsKey(SELECTOR)) {
                 continue;
             }
             final String selector = (String) providerConfig.get(SELECTOR);
+            //找到selector对应的属性
             final String resolvedSelector = PropertyPlaceholderHelper.INSTANCE.replacePlaceholders(
                 selector, System.getProperties()
             );
+            //移除所有不属于selector的key，包括如果这个参数时"-"，也可以进行移除
             providerConfig.entrySet().removeIf(e -> !resolvedSelector.equals(e.getKey()));
 
             if (!providerConfig.isEmpty()) {

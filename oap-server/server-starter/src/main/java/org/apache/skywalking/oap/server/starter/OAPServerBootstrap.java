@@ -52,6 +52,7 @@ public class OAPServerBootstrap {
 
             log.info("Version of OAP: {}", Version.CURRENT);
 
+            //这里说明默认就是non-init模式
             if (RunningMode.isInitMode()) {
                 log.info("OAP starts up in init mode successfully, exit now...");
                 System.exit(0);

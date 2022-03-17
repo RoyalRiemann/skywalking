@@ -38,7 +38,7 @@ public class RunningMode {
 
     /**
      * Init mode, do all initialization things, and process should exit.
-     *
+     * 初始化模式的情况，当做完所有初始化信息时，程序退出
      * @return true if in this status
      */
     public static boolean isInitMode() {
@@ -47,7 +47,7 @@ public class RunningMode {
 
     /**
      * No-init mode, the oap just starts up, but wouldn't do storage init.
-     *
+     * 非初始化模式，则程序略过初始化步骤，然后一致性挂起
      * @return true if in this status.
      */
     public static boolean isNoInitMode() {

@@ -264,7 +264,7 @@ storage:
     fetchTaskLogMaxSize: ${SW_STORAGE_IOTDB_FETCH_TASK_LOG_MAX_SIZE:1000} # the max number of fetch task log in a request
 
 agent-analyzer:
-  selector: ${SW_AGENT_ANALYZER:default}
+  selector: ${SW_AGENT_ANALYZER:-}
   default:
     # The default sampling rate and the default trace latency time configured by the 'traceSamplingPolicySettingsFile' file.
     traceSamplingPolicySettingsFile: ${SW_TRACE_SAMPLING_POLICY_SETTINGS_FILE:trace-sampling-policy-settings.yml}
@@ -277,13 +277,13 @@ agent-analyzer:
     meterAnalyzerActiveFiles: ${SW_METER_ANALYZER_ACTIVE_FILES:datasource,threadpool,satellite,spring-sleuth} # Which files could be meter analyzed, files split by ","
 
 log-analyzer:
-  selector: ${SW_LOG_ANALYZER:default}
+  selector: ${SW_LOG_ANALYZER:-}
   default:
     lalFiles: ${SW_LOG_LAL_FILES:default}
     malFiles: ${SW_LOG_MAL_FILES:""}
 
 event-analyzer:
-  selector: ${SW_EVENT_ANALYZER:default}
+  selector: ${SW_EVENT_ANALYZER:-}
   default:
 
 receiver-sharing-server:
@@ -312,38 +312,38 @@ receiver-sharing-server:
     gRPCSslTrustedCAsPath: ${SW_RECEIVER_GRPC_SSL_TRUSTED_CAS_PATH:""}
     authentication: ${SW_AUTHENTICATION:""}
 receiver-register:
-  selector: ${SW_RECEIVER_REGISTER:default}
+  selector: ${SW_RECEIVER_REGISTER:-}
   default:
 
 receiver-trace:
-  selector: ${SW_RECEIVER_TRACE:default}
+  selector: ${SW_RECEIVER_TRACE:-}
   default:
 
 receiver-jvm:
-  selector: ${SW_RECEIVER_JVM:default}
+  selector: ${SW_RECEIVER_JVM:-}
   default:
 
 receiver-clr:
-  selector: ${SW_RECEIVER_CLR:default}
+  selector: ${SW_RECEIVER_CLR:-}
   default:
 
 receiver-profile:
-  selector: ${SW_RECEIVER_PROFILE:default}
+  selector: ${SW_RECEIVER_PROFILE:-}
   default:
 
 receiver-zabbix:
-  selector: ${SW_RECEIVER_ZABBIX:default}
+  selector: ${SW_RECEIVER_ZABBIX:-}
   default:
     port: ${SW_RECEIVER_ZABBIX_PORT:10051}
     host: ${SW_RECEIVER_ZABBIX_HOST:0.0.0.0}
     activeFiles: ${SW_RECEIVER_ZABBIX_ACTIVE_FILES:agent}
 
 service-mesh:
-  selector: ${SW_SERVICE_MESH:default}
+  selector: ${SW_SERVICE_MESH:-}
   default:
 
 envoy-metric:
-  selector: ${SW_ENVOY_METRIC:default}
+  selector: ${SW_ENVOY_METRIC:-}
   default:
     acceptMetricsService: ${SW_ENVOY_METRIC_SERVICE:true}
     alsHTTPAnalysis: ${SW_ENVOY_METRIC_ALS_HTTP_ANALYSIS:""}
@@ -375,11 +375,11 @@ kafka-fetcher:
     kafkaHandlerThreadPoolQueueSize: ${SW_KAFKA_HANDLER_THREAD_POOL_QUEUE_SIZE:-1}
 
 receiver-meter:
-  selector: ${SW_RECEIVER_METER:default}
+  selector: ${SW_RECEIVER_METER:-}
   default:
 
 receiver-otel:
-  selector: ${SW_OTEL_RECEIVER:default}
+  selector: ${SW_OTEL_RECEIVER:-}
   default:
     enabledHandlers: ${SW_OTEL_RECEIVER_ENABLED_HANDLERS:"oc"}
     enabledOcRules: ${SW_OTEL_RECEIVER_ENABLED_OC_RULES:"istio-controlplane,k8s-cluster,k8s-node,k8s-service,oap,vm"}
@@ -398,13 +398,13 @@ receiver-zipkin:
     instanceNameRule: ${SW_RECEIVER_ZIPKIN_INSTANCE_NAME_RULE:[spring.instance_id,node_id]}
 
 receiver-browser:
-  selector: ${SW_RECEIVER_BROWSER:default}
+  selector: ${SW_RECEIVER_BROWSER:-}
   default:
     # The sample rate precision is 1/10000. 10000 means 100% sample in default.
     sampleRate: ${SW_RECEIVER_BROWSER_SAMPLE_RATE:10000}
 
 receiver-log:
-  selector: ${SW_RECEIVER_LOG:default}
+  selector: ${SW_RECEIVER_LOG:-}
   default:
 
 query:
@@ -418,7 +418,7 @@ query:
     enableLogTestTool: ${SW_QUERY_GRAPHQL_ENABLE_LOG_TEST_TOOL:false}
 
 alarm:
-  selector: ${SW_ALARM:default}
+  selector: ${SW_ALARM:-}
   default:
 
 telemetry:
@@ -505,9 +505,9 @@ configuration-discovery:
     disableMessageDigest: ${SW_DISABLE_MESSAGE_DIGEST:false}
 
 receiver-event:
-  selector: ${SW_RECEIVER_EVENT:default}
+  selector: ${SW_RECEIVER_EVENT:-}
   default:
 
 receiver-ebpf:
-  selector: ${SW_RECEIVER_EBPF:default}
+  selector: ${SW_RECEIVER_EBPF:-}
   default:

@@ -25,6 +25,7 @@ import java.util.Properties;
  * Modulization configurations. The {@link ModuleManager} is going to start, lookup, start modules based on this.
  */
 public class ApplicationConfiguration {
+    //moduleName,然后又是一个map结构的信息
     private HashMap<String, ModuleConfiguration> modules = new HashMap<>();
 
     public String[] moduleList() {
