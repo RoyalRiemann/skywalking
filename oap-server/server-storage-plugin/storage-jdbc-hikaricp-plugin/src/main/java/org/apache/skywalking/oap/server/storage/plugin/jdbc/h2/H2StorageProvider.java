@@ -173,6 +173,13 @@ public class H2StorageProvider extends ModuleProvider {
         final ConfigService configService = getManager().find(CoreModule.NAME)
                                                         .provider()
                                                         .getService(ConfigService.class);
+        //    "http.method",
+        //        "status_code",
+        //        "db.type",
+        //        "db.instance",
+        //        "mq.queue",
+        //        "mq.topic",
+        //        "mq.broker"
         final int numOfSearchableTracesTags = configService.getSearchableTracesTags().split(Const.COMMA).length;
         if (numOfSearchableTracesTags * config.getNumOfSearchableValuesPerTag() > config.getMaxSizeOfArrayColumn()) {
             throw new ModuleStartException("Size of searchableTracesTags[" + numOfSearchableTracesTags

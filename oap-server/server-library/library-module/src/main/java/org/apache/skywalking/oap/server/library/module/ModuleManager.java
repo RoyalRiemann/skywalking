@@ -37,6 +37,7 @@ public class ModuleManager implements ModuleDefineHolder {
     public void init(
         ApplicationConfiguration applicationConfiguration) throws ModuleNotFoundException, ProviderNotFoundException, ServiceNotProvidedException, CycleDependencyException, ModuleConfigException, ModuleStartException {
         String[] moduleNames = applicationConfiguration.moduleList();
+        //从这段发现，skywalking本身的代码结构是比较乱的，不注重性能.设计这块缺失
         ServiceLoader<ModuleDefine> moduleServiceLoader = ServiceLoader.load(ModuleDefine.class);
         ServiceLoader<ModuleProvider> moduleProviderLoader = ServiceLoader.load(ModuleProvider.class);
 

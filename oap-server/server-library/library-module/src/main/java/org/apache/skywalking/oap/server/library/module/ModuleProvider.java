@@ -26,6 +26,7 @@ import lombok.Setter;
  * The <code>ModuleProvider</code> is an implementation of a {@link ModuleDefine}.
  * <p>
  * And each moduleDefine can have one or more implementation, which depends on `application.yml`
+ * moduleProvider是moduleDefine的实现.
  */
 public abstract class ModuleProvider implements ModuleServiceHolder {
     @Setter
@@ -52,32 +53,37 @@ public abstract class ModuleProvider implements ModuleServiceHolder {
     public abstract Class<? extends ModuleDefine> module();
 
     /**
-     *
+     * moduleProvider的config
      */
     public abstract ModuleConfig createConfigBeanIfAbsent();
 
     /**
      * In prepare stage, the moduleDefine should initialize things which are irrelative other modules.
+     * 初始化
      */
     public abstract void prepare() throws ServiceNotProvidedException, ModuleStartException;
 
     /**
      * In start stage, the moduleDefine has been ready for interop.
+     * 启动阶段，准备好互操作?
      */
     public abstract void start() throws ServiceNotProvidedException, ModuleStartException;
 
     /**
      * This callback executes after all modules start up successfully.
+     * 回调通知
      */
     public abstract void notifyAfterCompleted() throws ServiceNotProvidedException, ModuleStartException;
 
     /**
      * @return moduleDefine names which does this moduleDefine require?
+     * 其实就是用module的Name与provider的module做个比较，要一致才星
      */
     public abstract String[] requiredModules();
 
     /**
      * Register an implementation for the service of this moduleDefine provider.
+     * 注册了一个服务,其实相当于IOC
      */
     @Override
     public final void registerServiceImplementation(Class<? extends Service> serviceType,
@@ -91,7 +97,7 @@ public abstract class ModuleProvider implements ModuleServiceHolder {
 
     /**
      * Make sure all required services have been implemented.
-     *
+     *  判断service是否已经全部实例化了
      * @param requiredServices must be implemented by the moduleDefine.
      * @throws ServiceNotProvidedException when exist unimplemented service.
      */

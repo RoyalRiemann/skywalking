@@ -26,14 +26,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A module definition.
+ * A module definition. module和provider基本上是一一对应的,他的service是操作的类
  */
 public abstract class ModuleDefine implements ModuleProviderHolder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModuleDefine.class);
 
+    //对应的provider
     private ModuleProvider loadedProvider = null;
 
+    //module的Name
     private final String name;
 
     public ModuleDefine(String name) {
@@ -50,12 +52,13 @@ public abstract class ModuleDefine implements ModuleProviderHolder {
 
     /**
      * @return the {@link Service} provided by this module.
+     * 这个模块提供的服务
      */
     public abstract Class[] services();
 
     /**
      * Run the prepare stage for the module, including finding all potential providers, and asking them to prepare.
-     *
+     * 在prepare阶段，加载provider并初始化,这里基本上都是大对象
      * @param moduleManager of this module
      * @param configuration of this module
      * @throws ProviderNotFoundException when even don't find a single one providers.
@@ -82,6 +85,7 @@ public abstract class ModuleDefine implements ModuleProviderHolder {
 
         }
 
+        //没有provider也是会挂
         if (loadedProvider == null) {
             throw new ProviderNotFoundException(this.name() + " module no provider found.");
         }
