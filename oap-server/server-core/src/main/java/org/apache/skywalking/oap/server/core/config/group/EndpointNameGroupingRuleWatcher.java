@@ -31,8 +31,8 @@ import org.apache.skywalking.oap.server.library.util.ResourceUtils;
  */
 @Slf4j
 public class EndpointNameGroupingRuleWatcher extends ConfigChangeWatcher {
-    private final EndpointNameGrouping grouping;
-    private volatile String ruleSetting;
+    private final EndpointNameGrouping grouping;//终端命名分组
+    private volatile String ruleSetting;//规则设置
 
     public EndpointNameGroupingRuleWatcher(ModuleProvider provider,
                                            EndpointNameGrouping grouping) throws FileNotFoundException {

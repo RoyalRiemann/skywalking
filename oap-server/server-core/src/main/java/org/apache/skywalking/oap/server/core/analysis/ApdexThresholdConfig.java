@@ -34,6 +34,7 @@ import org.yaml.snakeyaml.constructor.SafeConstructor;
 
 /**
  * Apdex threshold configuration dictionary adapter. Looking up a service apdex threshold from dynamic config service.
+ * 应用性能指标
  */
 @Slf4j
 public class ApdexThresholdConfig extends ConfigChangeWatcher implements ConfigurationDictionary {

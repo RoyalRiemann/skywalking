@@ -113,17 +113,29 @@ import org.apache.skywalking.oap.server.telemetry.api.TelemetryRelatedContext;
  */
 public class CoreModuleProvider extends ModuleProvider {
 
+    //module的配置类
     private final CoreModuleConfig moduleConfig;
+    //GRPC服务
     private GRPCServer grpcServer;
+    //jetty服务
     private JettyServer jettyServer;
+    //远程客户端管理
     private RemoteClientManager remoteClientManager;
+    //注解的scan,主要是扫描注解
     private final AnnotationScan annotationScan;
+    //存储模型
     private final StorageModels storageModels;
+    //接收器
     private final SourceReceiverImpl receiver;
+    //应用性能指标
     private ApdexThresholdConfig apdexThresholdConfig;
+    //终端组分别
     private EndpointNameGroupingRuleWatcher endpointNameGroupingRuleWatcher;
+    //OAL脚本引擎
     private OALEngineLoaderService oalEngineLoaderService;
+    //日志配置观察器
     private LoggingConfigWatcher loggingConfigWatcher;
+    //终端
     private EndpointNameGroupingRule4OpenapiWatcher endpointNameGroupingRule4OpenapiWatcher;
 
     public CoreModuleProvider() {
@@ -372,12 +384,14 @@ public class CoreModuleProvider extends ModuleProvider {
             throw new ModuleStartException(e.getMessage(), e);
         }
 
+        //持久化
         PersistenceTimer.INSTANCE.start(getManager(), moduleConfig);
 
         if (moduleConfig.isEnableDataKeeperExecutor()) {
             DataTTLKeeperTimer.INSTANCE.start(getManager(), moduleConfig);
         }
 
+        //缓存更新
         CacheUpdateTimer.INSTANCE.start(getManager(), moduleConfig.getMetricsDataTTL());
 
         try {
