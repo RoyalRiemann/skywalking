@@ -59,19 +59,23 @@ public enum PersistenceTimer {
         IBatchDAO batchDAO =
             moduleManager.find(StorageModule.NAME).provider().getService(IBatchDAO.class);
 
+        //指标分析
         MetricsCreator metricsCreator = moduleManager.find(TelemetryModule.NAME)
                                                      .provider()
                                                      .getService(MetricsCreator.class);
+        //空指标
         errorCounter = metricsCreator.createCounter(
             "persistence_timer_bulk_error_count",
             "Error execution of the prepare stage in persistence timer",
             MetricsTag.EMPTY_KEY, MetricsTag.EMPTY_VALUE
         );
+        //准备阶段直方图指标
         prepareLatency = metricsCreator.createHistogramMetric(
             "persistence_timer_bulk_prepare_latency",
             "Latency of the prepare stage in persistence timer",
             MetricsTag.EMPTY_KEY, MetricsTag.EMPTY_VALUE
         );
+        //执行阶段的
         executeLatency = metricsCreator.createHistogramMetric(
             "persistence_timer_bulk_execute_latency",
             "Latency of the execute stage in persistence timer",
@@ -96,6 +100,7 @@ public enum PersistenceTimer {
         }
     }
 
+    //组装保存数据
     private CompletableFuture<Void> extractDataAndSave(IBatchDAO batchDAO) {
         if (log.isDebugEnabled()) {
             log.debug("Extract data and save");
@@ -121,8 +126,10 @@ public enum PersistenceTimer {
                             );
                         }
 
+                        //内部准备请求,把相关的数据的sql准备起来
                         innerPrepareRequests = worker.buildBatchRequests();
 
+                        //清除过期缓存
                         worker.endOfRound();
                     }
 
@@ -130,7 +137,7 @@ public enum PersistenceTimer {
                         return;
                     }
 
-                    // Execution stage
+                    // Execution stage,持久化的执行步骤,延时计时器
                     HistogramMetrics.Timer executeLatencyTimer = executeLatency.createTimer();
                     batchDAO.flush(innerPrepareRequests)
                             .whenComplete(($1, $2) -> executeLatencyTimer.close());

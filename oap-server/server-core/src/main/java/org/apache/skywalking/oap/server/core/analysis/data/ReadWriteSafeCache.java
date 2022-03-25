@@ -81,6 +81,7 @@ public class ReadWriteSafeCache<T> {
     public List<T> read() {
         lock.lock();
         try {
+            //----read----write----
             // Switch the read and write pointers, when there is no writing.
             BufferedData<T> tempPointer = writeBufferPointer;
             writeBufferPointer = readBufferPointer;

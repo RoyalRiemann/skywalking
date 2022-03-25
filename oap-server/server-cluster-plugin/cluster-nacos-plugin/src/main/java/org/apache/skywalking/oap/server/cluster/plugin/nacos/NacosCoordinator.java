@@ -53,11 +53,12 @@ public class NacosCoordinator implements ClusterRegister, ClusterNodesQuery {
         this.config = config;
     }
 
+    //查询nacos节点信息
     @Override
     public List<RemoteInstance> queryRemoteNodes() {
         List<RemoteInstance> remoteInstances = new ArrayList<>();
         try {
-            initHealthChecker();
+            initHealthChecker();//初始化健康模块，其实现在实现的都没对这块做什么no-op
             List<Instance> instances = namingService.selectInstances(config.getServiceName(), true);
             if (CollectionUtils.isNotEmpty(instances)) {
                 instances.forEach(instance -> {

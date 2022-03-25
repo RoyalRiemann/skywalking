@@ -25,6 +25,7 @@ import org.apache.skywalking.oap.server.core.storage.DAO;
 public interface INetworkAddressAliasDAO extends DAO {
     /**
      * Load the recent update alias information.
+     * 加载最近的更新的同义词信息
      *
      * @param timeBucket in minute unit
      * @return All new alias updated before the given time bucket.

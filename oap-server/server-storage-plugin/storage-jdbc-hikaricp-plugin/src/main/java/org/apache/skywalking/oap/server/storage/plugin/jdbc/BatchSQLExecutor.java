@@ -30,6 +30,7 @@ import java.util.List;
 
 /**
  * A Batch SQL executor.
+ * 批量执行器
  */
 @Slf4j
 @RequiredArgsConstructor

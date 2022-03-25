@@ -64,7 +64,7 @@ public @interface Column {
      *
      * Notice, different lengths may cause different types.
      * Such as, over 16383 would make the type in MySQL to be MEDIUMTEXT, due to database varchar max=16383
-     *
+     * 字段长度,正对string类型才生效
      * @since 7.1.0
      */
     int length() default 200;
@@ -72,7 +72,7 @@ public @interface Column {
     /**
      * The return name of system environment could provide an override value of the length limitation.
      * @return the variable name of system environment.
-     *
+     * 返回一个变量名
      * @since 8.2.0
      */
     String lengthEnvVariable() default "";
@@ -80,7 +80,7 @@ public @interface Column {
     /**
      * Column with data type != {@link ValueDataType#NOT_VALUE} represents this is a value column. Indicate it would be
      * queried by UI/CLI.
-     *
+     *  column 的数据类型
      * @return the data type of this value column. The value column is the query related value Set {@link
      * ValueDataType#NOT_VALUE} if this is not the value column, read {@link ValueDataType} for more details.
      * @since 8.0.0
@@ -89,6 +89,7 @@ public @interface Column {
 
     /**
      * The storage analyzer mode.
+     *  储存的分型模型
      *
      * @since 8.4.0
      */
@@ -118,11 +119,13 @@ public @interface Column {
     /**
      * ValueDataType represents the data structure of value column. The persistent way of the value column determine the
      * available ways to query the data.
+     * 值列的类型，值列的持久化方式决定了数据查询的方式
      */
     enum ValueDataType {
         /**
          * NOT_VALUE represents this value wouldn't be queried directly through metrics v2 protocol. It could be never
-         * queried, or just through hard code to do so, uch as the lines of topology and service.
+         * queried, or just through hard code to do so, such as the lines of topology and service.
+         * NOT_VALUE 表明值列可能不会通过v2协议查询，可能仅仅通过硬编码查询，例如top和服务
          */
         NOT_VALUE(false),
         /**
@@ -131,15 +134,18 @@ public @interface Column {
         COMMON_VALUE(true),
         /**
          * LABELLED_VALUE represents this metrics have multiple values with different labels.
+         * 有不同的标签
          */
         LABELED_VALUE(true),
         /**
          * HISTOGRAM represents the values are grouped by the buckets, usually suitable for heatmap query.
+         * 直方图标识值会按照某个bucket汇总,通常是和heatmap查询
          */
         HISTOGRAM(true),
         /**
          * SAMPLED_RECORD represents the values are detail data, being persistent by following some sampled rules.
          * Usually do topn query based on value column value ASC or DESC.
+         * SAMPLED_RECORD 表明值是明细数据，会按照一些简单规则进行持久化，通常是TOPN 或者排序
          */
         SAMPLED_RECORD(true);
 

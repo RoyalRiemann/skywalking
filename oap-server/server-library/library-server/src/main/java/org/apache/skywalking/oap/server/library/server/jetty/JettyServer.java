@@ -36,10 +36,11 @@ public class JettyServer implements Server {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JettyServer.class);
 
-    private org.eclipse.jetty.server.Server server;
-    private ServletContextHandler servletContextHandler;
-    private JettyServerConfig jettyServerConfig;
+    private org.eclipse.jetty.server.Server server;//server
+    private ServletContextHandler servletContextHandler; //servlet上下文处理器
+    private JettyServerConfig jettyServerConfig;//jetty的配置文件
 
+    //jetty服务
     public JettyServer(JettyServerConfig config) {
         this.jettyServerConfig = config;
     }

@@ -41,7 +41,7 @@ public class TopNWorker extends PersistenceWorker<TopN> {
     private final IRecordDAO recordDAO;
     private final Model model;
     private final DataCarrier<TopN> dataCarrier;
-    private long reportPeriod;
+    private long reportPeriod; //报告期,也就是说这么多时间才能用
     private volatile long lastReportTimestamp;
 
     TopNWorker(ModuleDefineHolder moduleDefineHolder, Model model, int topNSize, long reportPeriod,
@@ -65,6 +65,7 @@ public class TopNWorker extends PersistenceWorker<TopN> {
     @Override
     public List<PrepareRequest> buildBatchRequests() {
         long now = System.currentTimeMillis();
+        //没过报告期就返回空list
         if (now - lastReportTimestamp <= reportPeriod) {
             // Only do report in its own report period.
             return Collections.EMPTY_LIST;
@@ -73,6 +74,7 @@ public class TopNWorker extends PersistenceWorker<TopN> {
 
         final List<TopN> lastCollection = getCache().read();
 
+        //read出来的数据写入持久化框架里面去，一堆一堆的insert语句
         List<PrepareRequest> prepareRequests = new ArrayList<>(lastCollection.size());
         lastCollection.forEach(record -> {
             try {
@@ -86,6 +88,7 @@ public class TopNWorker extends PersistenceWorker<TopN> {
 
     /**
      * This method used to clear the expired cache, but TopN is not following it.
+     * 这个方法是用来清除过期缓存
      */
     @Override
     public void endOfRound() {

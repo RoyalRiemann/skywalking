@@ -31,7 +31,7 @@ import org.apache.skywalking.oap.server.core.analysis.worker.MetricsStreamProces
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MetricsExtension {
     /**
-     * @return true if this metrics stream support down sampling.
+     * @return true if this metrics stream support down sampling.如果指标留支持采用为true
      */
     boolean supportDownSampling();
 

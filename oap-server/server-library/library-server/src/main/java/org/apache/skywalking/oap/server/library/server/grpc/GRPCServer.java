@@ -42,17 +42,17 @@ import org.apache.skywalking.oap.server.library.server.pool.CustomThreadFactory;
 public class GRPCServer implements Server {
 
     private final String host;
-    private final int port;
+    private final int port;//11900
     private int maxConcurrentCallsPerConnection;
-    private int maxMessageSize;
-    private io.grpc.Server server;
-    private NettyServerBuilder nettyServerBuilder;
-    private String certChainFile;
-    private String privateKeyFile;
-    private String trustedCAsFile;
-    private DynamicSslContext sslContext;
-    private int threadPoolSize = Runtime.getRuntime().availableProcessors() * 4;
-    private int threadPoolQueueSize = 10000;
+    private int maxMessageSize;//消息最大值
+    private io.grpc.Server server;//真实服务
+    private NettyServerBuilder nettyServerBuilder;//netty
+    private String certChainFile;//证书链文件
+    private String privateKeyFile;//私钥文件
+    private String trustedCAsFile;//被信任的文件
+    private DynamicSslContext sslContext;//sslContext
+    private int threadPoolSize = Runtime.getRuntime().availableProcessors() * 4;//线程池大小
+    private int threadPoolQueueSize = 10000;//线程池队列大小
 
     public GRPCServer(String host, int port) {
         this.host = host;
@@ -102,6 +102,7 @@ public class GRPCServer implements Server {
 
     @Override
     public void initialize() {
+        //初始化
         InetSocketAddress address = new InetSocketAddress(host, port);
         ArrayBlockingQueue<Runnable> blockingQueue = new ArrayBlockingQueue<>(threadPoolQueueSize);
         ExecutorService executor = new ThreadPoolExecutor(
@@ -130,7 +131,7 @@ public class GRPCServer implements Server {
     @Override
     public void start() throws ServerException {
         try {
-            Optional.ofNullable(sslContext).ifPresent(DynamicSslContext::start);
+            Optional.ofNullable(sslContext).ifPresent(DynamicSslContext::start);//启动监控
             server = nettyServerBuilder.build();
             server.start();
         } catch (IOException e) {
@@ -138,26 +139,31 @@ public class GRPCServer implements Server {
         }
     }
 
+    //绑定服务实例
     public void addHandler(BindableService handler) {
         log.info("Bind handler {} into gRPC server {}:{}", handler.getClass().getSimpleName(), host, port);
         nettyServerBuilder.addService(handler);
     }
 
+    //公开服务定义
     public void addHandler(ServerServiceDefinition definition) {
         log.info("Bind handler {} into gRPC server {}:{}", definition.getClass().getSimpleName(), host, port);
         nettyServerBuilder.addService(definition);
     }
 
+    //服务拦截器
     public void addHandler(ServerInterceptor serverInterceptor) {
         log.info("Bind interceptor {} into gRPC server {}:{}", serverInterceptor.getClass().getSimpleName(), host, port);
         nettyServerBuilder.intercept(serverInterceptor);
     }
 
+    //是否是SSL
     @Override
     public boolean isSSLOpen() {
         return !Strings.isNullOrEmpty(privateKeyFile) && !Strings.isNullOrEmpty(certChainFile);
     }
 
+    //状态相等
     @Override
     public boolean isStatusEqual(Server target) {
         if (this == target)

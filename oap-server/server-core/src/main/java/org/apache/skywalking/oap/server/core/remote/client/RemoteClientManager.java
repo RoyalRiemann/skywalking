@@ -56,16 +56,16 @@ public class RemoteClientManager implements Service {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoteClientManager.class);
 
-    private final ModuleDefineHolder moduleDefineHolder;
-    private DynamicSslContext sslContext;
-    private ClusterNodesQuery clusterNodesQuery;
-    private volatile List<RemoteClient> usingClients;
-    private GaugeMetrics gauge;
-    private int remoteTimeout;
+    private final ModuleDefineHolder moduleDefineHolder;//define
+    private DynamicSslContext sslContext;//SSL
+    private ClusterNodesQuery clusterNodesQuery;//集群节点查询
+    private volatile List<RemoteClient> usingClients;//远程客户端
+    private GaugeMetrics gauge;//测量指标
+    private int remoteTimeout;//远程超时
 
     /**
      * Initial the manager for all remote communication clients.
-     *
+     * 初始化所有远程通信客户端的管理
      * @param moduleDefineHolder for looking up other modules
      * @param remoteTimeout      for cluster internal communication, in second unit.
      * @param trustedCAFile      SslContext to verify server certificates.
@@ -99,10 +99,12 @@ public class RemoteClientManager implements Service {
     /**
      * Query OAP server list from the cluster module and create a new connection for the new node. Make the OAP server
      * orderly because of each of the server will send stream data to each other by hash code.
+     * 从集群节点查询服务，创建连接
      */
     void refresh() {
+        //测量
         if (gauge == null) {
-            gauge = moduleDefineHolder.find(TelemetryModule.NAME)
+            gauge = moduleDefineHolder.find(TelemetryModule.NAME)//遥测
                                       .provider()
                                       .getService(MetricsCreator.class)
                                       .createGauge(
@@ -117,6 +119,7 @@ public class RemoteClientManager implements Service {
                         this.clusterNodesQuery = moduleDefineHolder.find(ClusterModule.NAME)
                                                                    .provider()
                                                                    .getService(ClusterNodesQuery.class);
+                        //集群节点查询
                     }
                 }
             }
@@ -125,23 +128,27 @@ public class RemoteClientManager implements Service {
                 LOGGER.debug("Refresh remote nodes collection.");
             }
 
+            //这个地方是判断集群节点是否OK
             List<RemoteInstance> instanceList = clusterNodesQuery.queryRemoteNodes();
-            instanceList = distinct(instanceList);
+            instanceList = distinct(instanceList);//排除
             Collections.sort(instanceList);
 
-            gauge.setValue(instanceList.size());
+            gauge.setValue(instanceList.size());//指标为活跃集群数量
 
             if (LOGGER.isDebugEnabled()) {
                 instanceList.forEach(instance -> LOGGER.debug("Cluster instance: {}", instance.toString()));
             }
 
+            //比较集群是否都在使用
             if (!compare(instanceList)) {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("ReBuilding remote clients.");
                 }
+                //重建远程连接
                 reBuildRemoteClients(instanceList);
             }
 
+            //print.......
             printRemoteClientList();
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);

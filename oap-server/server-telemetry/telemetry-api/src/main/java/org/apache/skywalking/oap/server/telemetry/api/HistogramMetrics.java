@@ -31,7 +31,7 @@ public abstract class HistogramMetrics {
 
     /**
      * Observe an execution, get a duration in second.
-     *
+     * 通过观察者模式进行延时操作
      * @param value duration in second.
      */
     public abstract void observe(double value);

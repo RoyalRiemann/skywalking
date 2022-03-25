@@ -37,8 +37,11 @@ public class OAPNodeChecker {
         if (CollectionUtils.isEmpty(remoteInstances)) {
             return false;
         }
+        //host的set
         Set<String> remoteAddressSet = remoteInstances.stream().map(remoteInstance ->
                 remoteInstance.getAddress().getHost()).collect(Collectors.toSet());
+
+        //地址中不能有127.0.0.1;localhost
         return !Sets.intersection(ILLEGAL_NODE_ADDRESS_IN_CLUSTER_MODE, remoteAddressSet).isEmpty();
     }
 

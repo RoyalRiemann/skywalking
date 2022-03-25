@@ -111,6 +111,7 @@ public class H2SQLExecutor {
     protected <T extends StorageData> SQLExecutor getInsertExecutor(String modelName, T metrics,
                                                                     StorageHashMapBuilder<T> storageBuilder,
                                                                     int maxSizeOfArrayColumn) throws IOException {
+        //TopN
         Map<String, Object> objectMap = storageBuilder.entity2Storage(metrics);
 
         SQLBuilder sqlBuilder = new SQLBuilder("INSERT INTO " + modelName + " VALUES");

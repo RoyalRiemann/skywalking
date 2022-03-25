@@ -40,9 +40,9 @@ import org.apache.skywalking.oap.server.core.storage.annotation.ValueColumnMetad
  */
 @Slf4j
 public class StorageModels implements IModelManager, ModelCreator, ModelManipulator {
-    private final List<Model> models;
-    private final HashMap<String, String> columnNameOverrideRule;
-    private final List<CreatingListener> listeners;
+    private final List<Model> models;//模型列表
+    private final HashMap<String, String> columnNameOverrideRule; //重写列？
+    private final List<CreatingListener> listeners;//监听，主要是存储初始化的时候创建监听
 
     public StorageModels() {
         this.models = new ArrayList<>();
@@ -94,6 +94,7 @@ public class StorageModels implements IModelManager, ModelCreator, ModelManipula
 
     /**
      * Read model column metadata based on the class level definition.
+     * 恢复、检索
      */
     private void retrieval(final Class<?> clazz,
                            final String modelName,
@@ -114,6 +115,7 @@ public class StorageModels implements IModelManager, ModelCreator, ModelManipula
                 int columnLength = column.length();
                 final String lengthEnvVariable = column.lengthEnvVariable();
                 if (StringUtil.isNotEmpty(lengthEnvVariable)) {
+                    //优先从环境变量中取字段长度
                     final String envValue = System.getenv(lengthEnvVariable);
                     if (StringUtil.isNotEmpty(envValue)) {
                         try {
@@ -141,15 +143,18 @@ public class StorageModels implements IModelManager, ModelCreator, ModelManipula
                     );
                 }
 
+                //索引定义
                 List<QueryUnifiedIndex> indexDefinitions = new ArrayList<>();
                 if (field.isAnnotationPresent(QueryUnifiedIndex.class)) {
                     indexDefinitions.add(field.getAnnotation(QueryUnifiedIndex.class));
                 }
 
+                //多级索引定义
                 if (field.isAnnotationPresent(MultipleQueryUnifiedIndex.class)) {
                     Collections.addAll(indexDefinitions, field.getAnnotation(MultipleQueryUnifiedIndex.class).value());
                 }
 
+                //查询字段为，列名和索引列
                 indexDefinitions.forEach(indexDefinition -> extraQueryIndices.add(new ExtraQueryIndex(
                     column.columnName(),
                     indexDefinition.withColumns()
@@ -157,6 +162,7 @@ public class StorageModels implements IModelManager, ModelCreator, ModelManipula
             }
         }
 
+        //如果超类不为空，对超类也进行类似操作。
         if (Objects.nonNull(clazz.getSuperclass())) {
             retrieval(clazz.getSuperclass(), modelName, modelColumns, extraQueryIndices, scopeId);
         }
@@ -169,6 +175,7 @@ public class StorageModels implements IModelManager, ModelCreator, ModelManipula
         ValueColumnMetadata.INSTANCE.overrideColumnName(columnName, newName);
     }
 
+    //重写列名
     private void followColumnNameRules(Model model) {
         columnNameOverrideRule.forEach((oldName, newName) -> {
             model.getColumns().forEach(column -> column.getColumnName().overrideName(oldName, newName));

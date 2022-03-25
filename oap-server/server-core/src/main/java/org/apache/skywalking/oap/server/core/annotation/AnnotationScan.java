@@ -49,6 +49,7 @@ public class AnnotationScan {
 
     /**
      * Begin to scan classes.
+     * 扫描包路径
      */
     public void scan() throws IOException, StorageException {
         ClassPath classpath = ClassPath.from(this.getClass().getClassLoader());

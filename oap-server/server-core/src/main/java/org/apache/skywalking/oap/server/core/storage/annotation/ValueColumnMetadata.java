@@ -32,8 +32,8 @@ import org.apache.skywalking.oap.server.core.query.sql.Function;
 public enum ValueColumnMetadata {
     INSTANCE;
 
-    private final Map<String, ValueColumn> mapping = new HashMap<>();
-    private final HashMap<String, String> columnNameOverrideRule = new HashMap<>();
+    private final Map<String, ValueColumn> mapping = new HashMap<>();//moduleName 和列
+    private final HashMap<String, String> columnNameOverrideRule = new HashMap<>(); //列名和老列名
 
     /**
      * Register the new metadata for the given model name.

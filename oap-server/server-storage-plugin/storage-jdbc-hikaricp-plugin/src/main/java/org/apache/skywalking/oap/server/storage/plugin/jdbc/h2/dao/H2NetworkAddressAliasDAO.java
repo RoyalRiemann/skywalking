@@ -43,12 +43,14 @@ public class H2NetworkAddressAliasDAO extends H2SQLExecutor implements INetworkA
         List<NetworkAddressAlias> networkAddressAliases = new ArrayList<>();
 
         try {
+            //select * from network_address_alias where last_update_time_bucket? ${lastUpdateTime}
             StringBuilder sql = new StringBuilder("select * from ");
             sql.append(NetworkAddressAlias.INDEX_NAME);
             sql.append(" where ").append(NetworkAddressAlias.LAST_UPDATE_TIME_BUCKET).append(">?");
 
             try (Connection connection = h2Client.getConnection()) {
                 try (ResultSet resultSet = h2Client.executeQuery(connection, sql.toString(), lastUpdateTime)) {
+                    //这写得真的很垃圾
                     NetworkAddressAlias networkAddressAlias;
                     do {
                         networkAddressAlias = (NetworkAddressAlias) toStorageData(

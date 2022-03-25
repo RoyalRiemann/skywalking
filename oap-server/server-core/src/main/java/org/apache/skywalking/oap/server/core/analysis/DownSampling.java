@@ -20,6 +20,7 @@ package org.apache.skywalking.oap.server.core.analysis;
 public enum DownSampling {
     /**
      * None downsampling is for un-time-series data.
+     * 采样
      */
     None(0, ""),
     /**

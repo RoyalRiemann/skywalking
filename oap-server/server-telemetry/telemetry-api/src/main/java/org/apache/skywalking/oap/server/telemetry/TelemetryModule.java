@@ -24,6 +24,7 @@ import org.apache.skywalking.oap.server.telemetry.api.MetricsCreator;
 
 /**
  * Telemetry module definition
+ * 遥测模块
  */
 public class TelemetryModule extends ModuleDefine {
     public static final String NAME = "telemetry";

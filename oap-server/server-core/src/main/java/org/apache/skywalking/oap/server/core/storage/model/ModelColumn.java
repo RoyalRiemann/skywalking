@@ -50,9 +50,11 @@ public class ModelColumn {
         /*
          * byte[] and {@link IntKeyLongValueHashMap} could never be query.
          */
+        //如果是byte[]或者dataTable类型，则是存储，不能作为查询
         if (type.equals(byte[].class) || type.equals(DataTable.class)) {
             this.storageOnly = true;
         } else {
+            //如果是存储并且是value?
             if (storageOnly && isValue) {
                 throw new IllegalArgumentException(
                     "The column " + columnName + " can't be defined as both isValue and storageOnly.");
